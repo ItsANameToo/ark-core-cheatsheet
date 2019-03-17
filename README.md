@@ -2,6 +2,37 @@
 
 > A curated list with useful commands, links and answers to common issues / questions for delegates and relay node operators
 
+## Contents
+
+* [Basics](#basics)
+    * [Updating Server](#updating-server)
+    * [Fresh ARK Core 2.2 Install](#fresh-ark-core-22-install)
+    * [SSH Access](#ssh-access)
+    * [Useful aliases](#useful-aliases)
+* [Security](#security)
+* [Node Configuration](#node-configuration)
+    * [Plugins / Scripts](#plugins--scripts)
+    * [.env File](#env-file)
+* [Snapshots](#snapshots)
+    * [Creating a Snapshot](#creating-a-snapshot)
+    * [Restoring from a Snapshot](#restoring-from-a-snapshot)
+    * [Rollback](#rollback)
+    * [Database Dump](#database-dump)
+    * [Sharing a Snapshot](#sharing-a-snapshot)
+* [Misc](#misc)
+    * [Core File Locations](#core-file-locations)
+    * [Disabling API Ratelimit](#disabling-api-ratelimit)
+    * [Whitelisting IPs](#whitelisting-ips)
+    * [Getting logs from server](#getting-logs-from-server)
+* [Common Issues / FAQ](#common-issues--faq)
+    * [Removing Processes from PM2](#removing-processes-from-pm2)
+    * [Process Showing "Errored"](#process-showing-errored)
+    * [Cannot find module ...](#cannot-find-module)
+    * [The "..." process has entered an unknown state](#the-process-has-entered-an-unknown-state)
+* [Useful Links](#useful-links)
+
+----
+
 ## Basics
 
 ### Updating Server
@@ -64,6 +95,8 @@ It's recommended that you setup additional security measurements for your node. 
 * Cloudflare DDOS protection
 
 This is a good basis to have on your server, but you are free to look for other ways to secure it too.
+
+----
 
 ## Node Configuration
 
@@ -207,7 +240,11 @@ If you run into API Ratelimit issues on your node, you can disable it (or whitel
 
 ### Whitelisting IPs
 
-TODO
+You can limit access to the public api on your node by whitelisting IPs.
+By default, the whitelist consists of `*`, which means that everyone can access it.
+When you want to change it to just your server, you can remove the `*` and fill in the IP(s) that you allow.
+The whitelist can be found in the `~/.config/ark-core/mainnet/plugins.js` file, under `@arkecosystem/core-api`.
+Don't forget to restart your relay afterwards.
 
 ### Getting logs from server
 
@@ -231,14 +268,34 @@ If you use a different ssh port than the default `22`, you can run the above com
 
 ## Common Issues / FAQ
 
-- how to remove process from pm2: `pm2 delete ID` or `pm2 delete all`
-- pm2 list showing `errored`; check the logs for more information on the actual problem
-- issue with plugins; remove it from plugins.js or check if there's an update
-- The "..." process has entered an unknown state.: `pm2 update` then `pm2 kill` and restart if it still was a problem
+### Removing Processes from PM2
+
+You can remove a process from PM2 by running `pm2 delete ID` if you want to remove a specific process, or `pm2 delete all` if you want to remove everything.
+The ID of a process can be retrieved by running `pm2 list`, as it will show the ID next to the name of the process.
+If you don't see the ID, try increasing the size of your terminal window and running `pm2 list` again.
+
+### Process Showing Errored
+
+When you try to start the relay / forger and you see `errored` when running `pm2 list`, it means that the process could not be started successfully.
+In that case, you should take a look at the logs (`pm2 logs`) as that should indicate why it was not able to start.
+
+### Cannot find module ...
+
+If you run into an error indicating `Error: Cannot find module '...'`, it most likely means that you have a no longer supported plugin, or an incorrect plugin, added in your `plugins.js` file.
+The followup line in that case would be `at PluginRegistrar.__resolve`.
+To solve it, you simply have to edit your `plugins.js` file and remove / change the module it showed in the error message.
+
+If you see something else directly below the error, not related to the `PluginRegistrar`, it can also mean that a package is not correctly installed.
+
+### The "..." process has entered an unknown state
+
+This often indicates an issue with PM2 itself.
+Most likely you'll be able to resolve it by running `pm2 update`.
+If it still gives the error after updating, run `pm2 kill` and start the processes again.
 
 ----
 
-## Useful Documentation Links
+## Useful Links
 
 * [ARK CLI Docs](https://docs.ark.io/guidebook/core/cli.html)
 * [Creating Plugins](https://docs.ark.io/guidebook/developer/write-a-plugin.html)
