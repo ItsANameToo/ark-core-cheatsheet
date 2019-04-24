@@ -77,7 +77,7 @@ You can add aliases to your `~/.bashrc` file for commands you often run. In orde
 ```bash
 alias pm2rl="pm2 restart all && pm2 logs" # Restart the core processes and open the logs afterward
 alias editpl="nano ~/.config/ark-core/mainnet/plugins.js" # Open the `plugins.js` file where you can find and add plugins
-alias editdel="nano ~/.config/ark-core/mainnet/delegates.js" # Open the `delegates.js` file where you can find your delegate passphrase
+alias editdel="nano ~/.config/ark-core/mainnet/delegates.json" # Open the `delegates.json` file where you can find your delegate passphrase
 alias cdsnaps="cd ~/.local/share/ark-core/mainnet/snapshots/" # Navigates to the snapshot folder
 ```
 
